@@ -72,19 +72,14 @@ shinyUI(
       column(9,div(style = "height:50px;background-color: white;padding-top:30px;",
                    em(style="padding-left:25px", "Source: Amazon, Google, Microsoft public pricing. Updated: November, 15, 2014")),
              div(style="padding-left:25px", 
-            #     helpText("Use the widgets in the left panel and view your pricing information below"))
-      #)),
-    # show the prediction and confidence interval
-    #fluidRow(
-      #column(9, offset=2,
-             wellPanel(
-               helpText("The predicted hourly cost is below.  We have included lower and upper ranges for the mean costs",
-                        "for a Virtual Machine given your parameters.  There is also an estimated cost breakdown for vCPU",
-                        "Memory, and Instance Based Storage."),
-               tableOutput("result"),
-               br(),
-               span("Note: If your predicted cost is negative try increasing Memory size", style = "color:blue")
-             ))
+                 wellPanel(
+                   helpText("The predicted hourly cost is below.  We have included lower and upper ranges for the mean costs",
+                            "for a Virtual Machine given your parameters.  There is also an estimated cost breakdown for vCPU",
+                            "Memory, and Instance Based Storage."),
+                   tableOutput("result"),
+                   br(),
+                   span("Note: If your predicted cost is negative try increasing Memory size", style = "color:blue")
+                 ))
       )
     )
   )

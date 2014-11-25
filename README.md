@@ -2,7 +2,9 @@
 
 ## Cloud Computing Price Estimator
 
-This Shiny application provies a simple to use visualization of pricing for 3 major Cloud Computing providers.  Included in this release is costs for Microsoft Azure, Google Compute Engine, and Amazon Web Services.  The data was collected on November 15, 2014 and focuses solely on basic pricing without enhancements for commitments or spot pricing markets.  I have found visualizing, and estimating, Infrastructure as a Service pricing to be a "black art" and the Coursera Data Products course gave me the motivation to make an attempt and solving this puzzle.
+This Shiny application provies a simple to use visualization of pricing for 3 major Cloud Computing providers.  Included in this release is costs for Microsoft Azure, Google Compute Engine, and Amazon Web Services.  The data was collected on November 15, 2014 from Amazon, Google, and Microsoft's public pricing pages.  The data focuses solely on basic pricing without enhancements for commitments or spot pricing markets or instance types that included additional licensing costs.  
+
+I have found visualizing, and estimating, Infrastructure as a Service pricing to be a "black art" and the Coursera Data Products course gave me the motivation to make an attempt and solving this puzzle.
 
 As Infrastructure as a Service pricing is multivariate, depending on number of Virtual CPUs, Memory, and in most cases instance based storage, I chose to visualize the data in 3 dimensions.  I used the scatterplot3d package from Uwe Ligges and Martin Machler with some excellent help from the Statmethods blog (http://statmethods.wordpress.com/2012/01/30/getting-fancy-with-3-d-scatterplots/).
 
@@ -17,4 +19,3 @@ Below is a list of files contained in this release
 1. ui.R 
 2. server.R
 3. iaas-pricing.csv
-4. cloud_pricing - Slidify Presentation

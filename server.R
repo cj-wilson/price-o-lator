@@ -130,16 +130,6 @@ shinyServer(function(input, output, session) {
   # TODO: If result is negative, warn user
   # TODO: currently handled in UI as message text
   
-  preds <- reactive({
-    dt <- as.data.table(t(predFun(input$serverOpt,
-              input$predCores, 
-              input$predMemory, 
-              input$predStorage)))
-    setnames(dt, c("Predicted", "Upper Bound", "Lower Bound", 
-             "vCPU Cost", "Memory Cost", "Storage Cost"))
-    return(dt)
-  })
-  
   output$result <- renderTable({
     dt <- as.data.frame(t(predFun(input$serverOpt,
                                   input$predCores, 
@@ -151,19 +141,6 @@ shinyServer(function(input, output, session) {
     return(dt)
     }, digits=3)
   
-  
-  output$pred <-renderText({ paste0("$ ", round(predFun(input$serverOpt,
-                                                        input$predCores, 
-                                                        input$predMemory, 
-                                                        input$predStorage)[1], 3)) })
-  output$lwrConf <-renderText({ paste0("$ ", round(predFun(input$serverOpt,
-                                                           input$predCores, 
-                                                           input$predMemory, 
-                                                           input$predStorage)[2], 3)) })
-  output$uprConf <- renderText({ paste0("$ ", round(predFun(input$serverOpt,
-                                                            input$predCores, 
-                                                            input$predMemory, 
-                                                            input$predStorage)[3],3)) })
 })
 
 
