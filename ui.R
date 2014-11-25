@@ -69,7 +69,9 @@ shinyUI(
     fluidRow(
       # TODO: Add Mean Price, Memory and CPU to this frame
       column(9,div(style = "height: 100px;background-color: white;padding-top:40px;",
-                   em(style="padding-left:25px", "Data updated: November, 15, 2014"))
+                   em(style="padding-left:25px", "Data updated: November, 15, 2014")),
+             div(style="padding-left:25px", 
+                 helpText("Use the widgets in the left panel and view your pricing information below"))
       )),
     # show the prediction and confidence interval
     fluidRow(
