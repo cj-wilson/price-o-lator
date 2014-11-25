@@ -26,6 +26,7 @@ shinyUI(
            # setup panel for pricing applet
            wellPanel(
              h4("Price-o-Lator"),
+             helpText("Use the widgets below to estimate your costs."),
              hr(),
              selectInput("serverOpt", label = h5("Server Optimization"), 
                          choices = list("Standard" = 1, "Compute" = 2, "Memory" = 3), 
@@ -68,22 +69,22 @@ shinyUI(
     # setup a fluid row to separate the plot from the pricing prediction output
     fluidRow(
       # TODO: Add Mean Price, Memory and CPU to this frame
-      column(9,div(style = "height: 100px;background-color: white;padding-top:40px;",
-                   em(style="padding-left:25px", "Data updated: November, 15, 2014")),
+      column(9,div(style = "height:50px;background-color: white;padding-top:30px;",
+                   em(style="padding-left:25px", "Source: Amazon, Google, Microsoft public pricing. Updated: November, 15, 2014")),
              div(style="padding-left:25px", 
-                 helpText("Use the widgets in the left panel and view your pricing information below"))
-      )),
+            #     helpText("Use the widgets in the left panel and view your pricing information below"))
+      #)),
     # show the prediction and confidence interval
-    fluidRow(
-      column(9, offset=1,
+    #fluidRow(
+      #column(9, offset=2,
              wellPanel(
-               span("Predicted Hourly Cost: ", textOutput("pred"),
-                    "Confidence Interval: ", br(),
-                    "On average, predicted cost be between: ", textOutput("lwrConf"), "and",  textOutput("uprConf"),
-                    "95% of the time.",br(),
-                    span("Warning: If your predicted cost is negative try increasing Memory size", style = "color:blue"))
-               
-             )
+               helpText("The predicted hourly cost is below.  We have included lower and upper ranges for the mean costs",
+                        "for a Virtual Machine given your parameters.  There is also an estimated cost breakdown for vCPU",
+                        "Memory, and Instance Based Storage."),
+               tableOutput("result"),
+               br(),
+               span("Note: If your predicted cost is negative try increasing Memory size", style = "color:blue")
+             ))
       )
     )
   )

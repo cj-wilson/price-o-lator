@@ -44,6 +44,11 @@ pred <- function(model) {
   }
 }
 
+getWeights <- function(model, c, r, d) {
+  result <- c(c, r, d) * model$coefficients[2:4]
+  result
+}
+
 # Create linear models 
 # Called once at load time
 
@@ -69,12 +74,16 @@ predStd <- pred(standard.lm)
 
 predFun <- function(class, cores, memory, disk) {
   if (class == 1) { 
-    result <- predStd(cores, memory, disk) 
+    result <- c(as.vector(unlist(predStd(cores, memory, disk))), 
+                as.vector(unlist(getWeights(standard.lm, cores, memory, disk))))
   } else if (class == 2) {  
-    result <- predComp(cores, memory, disk)
+    result <- c(as.vector(unlist(predComp(cores, memory, disk))), 
+                as.vector(unlist(getWeights(compOpt.lm, cores, memory, disk))))
   } else if (class == 3) { 
-    result <- predMem(cores, memory, disk) 
+    result <- c(as.vector(unlist(predMem(cores, memory, disk))),
+                as.vector(unlist(getWeights(memOpt.lm, cores, memory, disk))))
   }
+  round(result, 3)
 }
 
 # TODO: Add feature to true up model for instances with no storage
@@ -120,6 +129,29 @@ shinyServer(function(input, output, session) {
   
   # TODO: If result is negative, warn user
   # TODO: currently handled in UI as message text
+  
+  preds <- reactive({
+    dt <- as.data.table(t(predFun(input$serverOpt,
+              input$predCores, 
+              input$predMemory, 
+              input$predStorage)))
+    setnames(dt, c("Predicted", "Upper Bound", "Lower Bound", 
+             "vCPU Cost", "Memory Cost", "Storage Cost"))
+    return(dt)
+  })
+  
+  output$result <- renderTable({
+    dt <- as.data.frame(t(predFun(input$serverOpt,
+                                  input$predCores, 
+                                  input$predMemory, 
+                                  input$predStorage)))
+    setnames(dt, c("Predicted Cost", "Lower Range", "Upper Range", 
+                   "vCPU Cost", "Memory Cost", "Storage Cost"))
+    rownames(dt) <- c("USD ($)")
+    return(dt)
+    }, digits=3)
+  
+  
   output$pred <-renderText({ paste0("$ ", round(predFun(input$serverOpt,
                                                         input$predCores, 
                                                         input$predMemory, 
