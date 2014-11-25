@@ -1,15 +1,18 @@
 library(shiny)
 library(scatterplot3d)
 library(data.table)
+
+# Constants for hours per year - 730 hours per month
 hoursYear <- 365 * 24
 hoursMonth <- hoursYear / 12
 
-# Disk prices -  per month
+# Setup Disk prices for Google/EBS -  per month
 
 GCE_DISK_MONTH <- .04
 GCE_SSD_MONTH <- .17
 EBS_DISK_MONTH <- .05
 EBS_SSD_MONTH <- .10
+
 # Disk prices - per hour
 
 GCE_DISK_HOUR <- GCE_DISK_MONTH / hoursMonth
@@ -18,13 +21,22 @@ GCE_SSD_HOUR <- GCE_SSD_MONTH / hoursMonth
 EBS_DISK_HOUR <- EBS_DISK_MONTH / hoursMonth
 EBS_SSD_HOUR <- EBS_SSD_MONTH / hoursMonth
 
+# Read data table
+
 DT <- fread("iaas-pricing.csv", sep=",", header=T)
+
+# Correct types
+
 DT$provider <- as.factor(DT$provider)
 DT$type <- as.factor(DT$type)
+
+# Add color column - makes scatterplot3d easier to work with
 
 DT$color[DT$provider == "Amazon"] <- "#feb24c"
 DT$color[DT$provider == "Google"] <- "#de2d26"
 DT$color[DT$provider == "Microsoft"] <- "#3182bd"
+
+# Create a function factory for prediction
 
 pred <- function(model) {
   function(c, r, d) {
@@ -32,15 +44,28 @@ pred <- function(model) {
   }
 }
 
+# Create linear models 
+# Called once at load time
+
 all.lm <- lm(data=DT, price ~ cores + ram + disk)
 compOpt.lm <- lm(data=DT[type=="compOpt"], price ~ cores + ram + disk)
 memOpt.lm <- lm(data=DT[type=="memOpt"], price ~ cores + ram + disk)
 standard.lm <- lm(data=DT[type=="standard"], price ~ cores + ram + disk)
 
+# store linear models in specified prediction function
+# called for each user and action, models already created at
+# load time
+
 predAll <- pred(all.lm)
 predComp <- pred(compOpt.lm)
 predMem <- pred(memOpt.lm)
 predStd <- pred(standard.lm)
+
+# Parent function called as part of if-else
+# during user predictions.  
+# TODO: create a more streamlined function
+# TODO: factory for this function and how
+# TODO: it is called.
 
 predFun <- function(class, cores, memory, disk) {
   if (class == 1) { 
@@ -69,7 +94,7 @@ predFun <- function(class, cores, memory, disk) {
 # DT.trueup <- trueUp(DT)
 
 shinyServer(function(input, output, session) {
-  
+  # Create and render 3D plot
   output$plot <- renderPlot({    
     with(DT[type==input$type & cores >= input$coresSlider[[1]] & 
       cores <= input$coresSlider[[2]]], {
@@ -88,7 +113,13 @@ shinyServer(function(input, output, session) {
       }
     )
   }, height= 400, width=600)
-  #TODO: If result is negative, warn user
+  
+  # output data table if user wants to view raw data
+  output$dt <- renderDataTable(DT[,1:(ncol(DT)-2), with=F],
+                               options = list(lengthMenu = c(10, 25, 50), pageLength = 10))
+  
+  # TODO: If result is negative, warn user
+  # TODO: currently handled in UI as message text
   output$pred <-renderText({ paste0("$ ", round(predFun(input$serverOpt,
                                                         input$predCores, 
                                                         input$predMemory, 
