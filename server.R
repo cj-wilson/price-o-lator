@@ -66,12 +66,6 @@ predComp <- pred(compOpt.lm)
 predMem <- pred(memOpt.lm)
 predStd <- pred(standard.lm)
 
-# Parent function called as part of if-else
-# during user predictions.  
-# TODO: create a more streamlined function
-# TODO: factory for this function and how
-# TODO: it is called.
-
 predFun <- function(class, cores, memory, disk) {
   if (class == 1) { 
     result <- c(as.vector(unlist(predStd(cores, memory, disk))), 
@@ -129,6 +123,11 @@ shinyServer(function(input, output, session) {
   
   # TODO: If result is negative, warn user
   # TODO: currently handled in UI as message text
+  
+  # Data table in renderTable is called with user
+  # options for server optimization, cores, memory, etc.
+  # The data table is transposed into a single row and
+  # column names and a row name for USD($) is added.
   
   output$result <- renderTable({
     dt <- as.data.frame(t(predFun(input$serverOpt,
