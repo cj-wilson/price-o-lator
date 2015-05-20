@@ -70,7 +70,7 @@ shinyUI(
     fluidRow(
       # TODO: Add Mean Price, Memory and CPU to this frame
       column(9,div(style = "height:50px;background-color: white;padding-top:30px;",
-                   em(style="padding-left:25px", "Source: Amazon, Google, Microsoft public pricing. Updated: November, 15, 2014")),
+                   em(style="padding-left:25px", "Source: Amazon, Google, Microsoft public pricing. Updated: May, 2015")),
              div(style="padding-left:25px", 
                  wellPanel(
                    helpText("The predicted hourly cost is below.  We have included lower and upper ranges for the mean costs",

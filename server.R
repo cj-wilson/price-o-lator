@@ -1,6 +1,8 @@
 library(shiny)
 library(scatterplot3d)
 library(data.table)
+library(readxl)
+library(magrittr)
 
 # Constants for hours per year - 730 hours per month
 hoursYear <- 365 * 24
@@ -23,7 +25,13 @@ EBS_SSD_HOUR <- EBS_SSD_MONTH / hoursMonth
 
 # Read data table
 
-DT <- fread("iaas-pricing.csv", sep=",", header=T)
+DT <- read_excel("iaas-pricing.xls", 1)
+
+# DT <- fread("iaas-pricing.csv", sep=",", header=T)
+
+# fix data table/frame
+
+DT %<>% as.data.frame() %>% as.data.table()
 
 # Correct types
 
